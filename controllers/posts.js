@@ -4,7 +4,7 @@ import mongoose from 'mongoose';
 export const getPosts = async (req, res) => {
     const { page } = req.query;
     try {
-        const LIMIT = 8;
+        const LIMIT = 6;
         // get the starting index of every page
         const startIndex = (Number(page) - 1) * LIMIT;
         const total = await PostMessage.countDocuments({});
@@ -54,9 +54,7 @@ export const updatePost = async (req, res) => {
 
     if (!mongoose.Types.ObjectId.isValid(id)) return res.status(404).send(`No post with id: ${id}`);
 
-    const updatedPost = { creator, title, message, tags, selectedFile, _id: id };
-
-    await PostMessage.findByIdAndUpdate(id, updatedPost, { new: true });
+    const updatedPost = await PostMessage.findByIdAndUpdate(id,  { creator, title, message, tags, selectedFile, _id: id }, { new: true });
 
     res.json(updatedPost);
 }
@@ -89,3 +87,12 @@ export const likePost = async (req, res) => {
     const updatedPost = await PostMessage.findByIdAndUpdate(id, post, { new: true });
     res.status(200).json(updatedPost);
 }
+
+export const commentPost = async (req, res) => {
+    const { id } = req.params;
+    const { value } = req.body;
+    const post = await PostMessage.findById(id);
+    post.comments.push(value);
+    const updatedPost = await PostMessage.findByIdAndUpdate(id, post, { new: true });
+    res.json(updatedPost);
+};

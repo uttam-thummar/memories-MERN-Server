@@ -15,9 +15,11 @@ app.use(cors());
 
 app.use('/posts', postRoutes);
 app.use("/user", userRoutes);
+app.get("/", (req, res) => {
+    res.send("APP IS RUNNING.");
+});
 
 // https://www.mongodb.com/atlas/database
-// const CONNECTION_URL = "mongodb+srv://memories-own:0ETVky95qhfPQclp@cluster0.dskaw.mongodb.net/?retryWrites=true&w=majority";
 const PORT = process.env.PORT || 5005;
 
 mongoose.connect(process.env.CONNECTION_URL, { useNewUrlParser: true, useUnifiedTopology: true, useFindAndModify: false })
